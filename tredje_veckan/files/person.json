@@ -1,0 +1,8 @@
+{
+    "name": "ali",
+    "age": 29,
+    "city": "mölndal",
+    "is_married": true,
+    "is_student": true,
+    "is_rich": false
+}
