@@ -12,7 +12,8 @@ def overdue_rate(df: pd.DataFrame) -> float:
     return float((df['overdue_days'] > 0).mean())
 
 def loans_by_genre(df: pd.DataFrame) -> pd.DataFrame:
-    """delar upp raderna per genre och räknar lån i varje grupp"""
+    """Vad lånas mest?
+    delar upp raderna per genre och räknar lån i varje grupp"""
     return (
         df.groupby('genre', dropna=False)['loan_id']
         .nunique()
@@ -21,10 +22,25 @@ def loans_by_genre(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 def loans_by_branch(df: pd.DataFrame) -> pd.DataFrame:
-    """delar upp raderna per branch och räknar lån i varje grupp"""
+    """Var lånas mest?
+    delar upp raderna per branch och räknar lån i varje grupp"""
     return (
         df.groupby('branch', dropna=False)['loan_id']
         .nunique()
         .sort_values(ascending=False)
         .reset_index(name='loans')
     )
+
+
+def loans_over_time(df: pd.DataFrame, freq: str='M') -> pd.DataFrame:
+    """När lånas det?"""
+    ts = (
+            df.set_index('checkout_date')
+            .sort_index()
+            .resample(freq)['loan_id'].nunique()
+            .reset_index(name='loans')
+            .assign(checkout_date=lambda x: x['checkout_date'].dt.date)
+
+        )
+    return ts
+    
